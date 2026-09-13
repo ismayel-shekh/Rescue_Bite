@@ -1,0 +1,25 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Rescue Bite helps people save money while rescuing good food from waste.">
+    <title>{% block title %}Rescue Bite{% endblock %}</title>
+    <script>
+        window.tailwind = window.tailwind || {};
+        window.tailwind.config = { theme: { extend: { colors: { rescue: { 50: '#ecfdf5', 600: '#059669', 700: '#047857' }, midnight: '#0f172a' } } } };
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{% static 'css/app.css' %}">
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="min-h-screen bg-slate-50 text-slate-900 antialiased {% block body_class %}{% endblock %}">
+    {% include "includes/navbar.html" %}
+    {% include "includes/alerts.html" %}
+    <main>{% block content %}{% endblock %}</main>
+    {% include "includes/footer.html" %}
+    <script src="{% static 'js/app.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

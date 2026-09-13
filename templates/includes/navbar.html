@@ -1,0 +1,35 @@
+{% if request.resolver_match.namespace == 'food' and request.resolver_match.url_name == 'home' %}
+<header class="site-header site-header--overlay">
+{% else %}
+<header class="site-header">
+{% endif %}
+    <nav class="site-nav" aria-label="Main navigation">
+        <a href="{% url 'food:home' %}" class="site-brand">
+            <span class="site-brand__mark" aria-hidden="true">🍴</span>
+            <span>Rescue<span class="site-brand__accent">Bite</span></span>
+        </a>
+        <button id="mobile-menu-button" class="site-menu-button" type="button" aria-controls="mobile-menu" aria-expanded="false" aria-label="Open menu">☰</button>
+        <div class="site-nav-links">
+            <a href="{% url 'food:home' %}" class="site-nav-link">Home</a>
+            <a href="{% url 'food:home' %}#about" class="site-nav-link">About</a>
+            <a href="{% url 'food:home' %}#how-it-works" class="site-nav-link">How it works</a>
+            <a href="{% url 'food:discover' %}" class="site-nav-link">Menu</a>
+            <a href="{% url 'impact:dashboard' %}" class="site-nav-link">Impact</a>
+            {% if user.is_authenticated %}
+                {% if user.is_staff %}<a href="{% url 'admin_dashboard:home' %}" class="site-nav-link">Admin dashboard</a>{% endif %}
+                {% if user.role == 'CUSTOMER' %}<a href="{% url 'accounts:customer_dashboard' %}" class="site-nav-link">My dashboard</a><a href="{% url 'reservations:customer_list' %}" class="site-nav-link">My reservations</a><a href="{% url 'notifications:index' %}" class="site-nav-link">Notifications{% if unread_notification_count %} ({{ unread_notification_count }}){% endif %}</a>{% else %}<a href="{% url 'restaurants:dashboard' %}" class="site-nav-link">Dashboard</a>{% endif %}
+                <form method="post" action="{% url 'accounts:logout' %}" class="site-nav-form">{% csrf_token %}<button class="site-nav-cta site-nav-cta--dark" type="submit">Log out</button></form>
+            {% else %}<a href="{% url 'accounts:login' %}" class="site-nav-link">Log in</a><a href="{% url 'food:discover' %}" class="site-nav-cta">Find food</a>{% endif %}
+        </div>
+    </nav>
+    <div id="mobile-menu" class="site-mobile-menu hidden" aria-label="Mobile navigation">
+        <div class="site-mobile-menu__links">
+            <a href="{% url 'food:home' %}">Home</a>
+            <a href="{% url 'food:home' %}#about">About</a>
+            <a href="{% url 'food:home' %}#how-it-works">How it works</a>
+            <a href="{% url 'food:discover' %}">Menu</a>
+            <a href="{% url 'impact:dashboard' %}">Impact</a>
+            {% if user.is_authenticated %}{% if user.is_staff %}<a href="{% url 'admin_dashboard:home' %}">Admin dashboard</a>{% endif %}{% if user.role == 'CUSTOMER' %}<a href="{% url 'accounts:customer_dashboard' %}">My dashboard</a><a href="{% url 'reservations:customer_list' %}">My reservations</a><a href="{% url 'notifications:index' %}">Notifications{% if unread_notification_count %} ({{ unread_notification_count }}){% endif %}</a>{% else %}<a href="{% url 'restaurants:dashboard' %}">Restaurant dashboard</a>{% endif %}<form method="post" action="{% url 'accounts:logout' %}">{% csrf_token %}<button type="submit">Log out</button></form>{% else %}<a href="{% url 'accounts:login' %}">Log in</a><a href="{% url 'food:discover' %}" class="site-mobile-menu__cta">Find food</a>{% endif %}
+        </div>
+    </div>
+</header>

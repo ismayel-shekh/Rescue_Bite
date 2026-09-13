@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}Rescue Bite | Rescue Good Food{% endblock %}
+{% block body_class %}rb-home{% endblock %}
+{% block content %}
+<section class="rb-hero" style="--rb-hero-image: url('{{ hero_image }}');">
+    <div class="rb-shell rb-hero__inner">
+        <div class="rb-hero__content">
+            <p class="rb-script rb-script--light">Rescue Good Food</p>
+            <h1>Good food deserves <span>another table.</span></h1>
+            <p class="rb-hero__copy">Affordable meals from local restaurants, rescued before closing time and shared with the people who need them.</p>
+            <div class="rb-actions">
+                <a href="{% url 'food:discover' %}" class="rb-button rb-button--amber">Discover today's bites <span>→</span></a>
+                <a href="{% url 'accounts:register' %}" class="rb-button rb-button--outline-light">Join the community</a>
+            </div>
+        </div>
+        <div class="rb-hero__note"><span>40–60%</span><small>off selected meals<br>near closing time</small></div>
+    </div>
+</section>
+
+<section id="about" class="rb-section rb-about">
+    <div class="rb-shell rb-about__grid">
+        <div class="rb-collage" aria-label="Rescued food and restaurant images">
+            {% for image in collage_images %}<img src="{{ image }}" alt="Food from a Rescue Bite restaurant" loading="lazy">{% endfor %}
+        </div>
+        <div class="rb-copy-block">
+            <p class="rb-script">About Rescue Bite <span class="rb-rule"></span></p>
+            <h2>Good food, better <span>purpose.</span></h2>
+            <p>Rescue Bite connects restaurants with students and neighbours looking for affordable meals. Instead of sending safe, unsold food to waste, restaurants can share it near closing time and recover value.</p>
+            <p>Every reservation supports a more affordable food culture and keeps edible meals in the community.</p>
+            <div class="rb-stat-row"><div><strong>40–60%</strong><span>customer savings</span></div><div><strong>100%</strong><span>pay at collection</span></div></div>
+            <a class="rb-button rb-button--amber" href="{% url 'food:discover' %}">Explore the menu <span>→</span></a>
+        </div>
+    </div>
+</section>
+
+<section id="how-it-works" class="rb-section rb-how">
+    <div class="rb-shell">
+        <div class="rb-section-heading"><p class="rb-script">How it works</p><h2>Small actions. <span>Real impact.</span></h2></div>
+        <div class="rb-how__grid">
+            <article><span class="rb-step">01</span><h3>Restaurants share</h3><p>Safe, fresh surplus meals are listed with a clear quantity and pickup window.</p></article>
+            <article><span class="rb-step">02</span><h3>Customers discover</h3><p>Students and neighbours find trusted meals at a price that feels good.</p></article>
+            <article><span class="rb-step">03</span><h3>Food gets rescued</h3><p>Collect before closing, enjoy your meal, and help keep good food out of waste.</p></article>
+        </div>
+    </div>
+</section>
+
+<section id="menu" class="rb-section rb-menu-section">
+    <div class="rb-shell">
+        <div class="rb-section-heading"><p class="rb-script rb-script--amber">Specialities</p><h2>Today's <span>Rescue Bites</span></h2><p>Browse what local restaurants are sharing today.</p></div>
+        <div class="rb-menu-grid">
+            {% for group in menu_groups %}
+            <article class="rb-menu-column">
+                <header><span class="rb-menu-icon">{% if forloop.counter == 1 %}☼{% elif forloop.counter == 2 %}✦{% else %}☾{% endif %}</span><h3>{{ group.label }}</h3><p>{{ group.caption }}</p></header>
+                {% for listing in group.listings %}
+                <a class="rb-menu-item" href="{% url 'food:detail' listing.pk %}">
+                    {% if listing.display_image %}<img src="{{ listing.display_image }}" alt="{{ listing.name }}">{% else %}<span class="rb-menu-item__placeholder">🍛</span>{% endif %}
+                    <span class="rb-menu-item__body"><strong>{{ listing.name }}</strong><small>{{ listing.restaurant.name }}</small><em>{{ listing.discount_percentage }}% off · {{ listing.quantity }} left</em></span>
+                    <b>RM {{ listing.discounted_price }}</b>
+                </a>
+                {% empty %}<p class="rb-menu-empty">New Rescue Bites will appear here soon.</p>{% endfor %}
+            </article>
+            {% endfor %}
+        </div>
+        <div class="rb-centered-action"><a class="rb-button rb-button--amber" href="{% url 'food:discover' %}">View the full menu <span>→</span></a></div>
+    </div>
+</section>
+
+<section class="rb-section rb-testimonials">
+    <div class="rb-shell">
+        <div class="rb-section-heading"><p class="rb-script">Our community says</p><h2>Rescue stories from <span>real people.</span></h2></div>
+        <div class="rb-testimonial-grid">
+            {% for testimonial in testimonials %}
+            <article class="rb-testimonial-card{% if forloop.counter == 2 %} is-featured{% endif %}"><span class="rb-quote-mark">“</span><p>{{ testimonial.quote }}</p><div class="rb-person"><span>{{ testimonial.initial }}</span><div><strong>{{ testimonial.name }}</strong><small>{{ testimonial.role }}</small></div></div></article>
+            {% endfor %}
+        </div>
+        <div class="rb-dots" aria-hidden="true"><i></i><i></i><i class="is-active"></i><i></i></div>
+    </div>
+</section>
+{% endblock %}

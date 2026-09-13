@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}{% if listing %}Edit{% else %}Add{% endif %} food | Rescue Bite{% endblock %}
+{% block body_class %}rb-workspace-page rb-restaurant-page{% endblock %}
+{% block content %}
+<div class="rb-workspace rb-restaurant-workspace">
+    {% include "includes/restaurant_sidebar.html" %}
+    <section class="rb-workspace-main">
+        <header class="rb-workspace-topbar">
+            <div class="rb-workspace-topbar__title"><button class="rb-workspace-menu-button" type="button" data-workspace-menu-button aria-controls="restaurant-sidebar" aria-expanded="false" aria-label="Open workspace menu">☰</button><div><p class="rb-workspace-kicker">Restaurant dashboard</p><h1>Listing creation</h1></div></div>
+            <div class="rb-workspace-topbar__actions"><a class="rb-workspace-search" href="{% url 'restaurants:dashboard' %}"><span>←</span> Back to overview</a><span class="rb-workspace-avatar">{{ user.name|first|upper }}</span></div>
+        </header>
+        <div class="rb-form-page">
+            <div class="rb-page-intro"><p class="rb-eyebrow">{{ restaurant.name }}</p><h2>{% if listing %}Edit your food listing{% else %}Share tonight's <span>surplus.</span>{% endif %}</h2><p>Give customers the details they need to rescue a fresh meal before your pickup deadline.</p></div>
+            <form method="post" enctype="multipart/form-data" class="rb-form-card">
+                {% csrf_token %}
+                <div class="rb-form-card__heading"><div><p class="rb-eyebrow">Listing details</p><h3>Tell customers what is available</h3></div><span class="rb-form-card__badge">40–60% off</span></div>
+                {% if form.non_field_errors %}<div class="rb-form-error">{{ form.non_field_errors }}</div>{% endif %}
+                <div class="rb-form-fields">{{ form.as_p }}</div>
+                <div id="discount-preview" class="rb-form-preview" aria-live="polite">Enter an original price and discount to preview the rescue price.</div>
+                <div class="rb-form-note">Discounted price is calculated automatically from the original price and discount percentage.</div>
+                <div class="rb-form-actions"><a class="rb-button rb-button--outline-dark" href="{% url 'restaurants:dashboard' %}">Cancel</a><button class="rb-button rb-button--amber" type="submit">{% if listing %}Save changes{% else %}Publish food{% endif %} <span>→</span></button></div>
+            </form>
+        </div>
+    </section>
+</div>
+{% endblock %}

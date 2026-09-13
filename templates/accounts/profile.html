@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Customer dashboard | Rescue Bite{% endblock %}
+{% block body_class %}rb-workspace-page rb-customer-page{% endblock %}
+{% block content %}
+<div class="rb-workspace rb-customer-workspace">
+    {% include "includes/customer_sidebar.html" %}
+    <section class="rb-workspace-main">
+        <header class="rb-workspace-topbar">
+            <div class="rb-workspace-topbar__title">
+                <button class="rb-workspace-menu-button" type="button" data-workspace-menu-button aria-controls="customer-sidebar" aria-expanded="false" aria-label="Open workspace menu">☰</button>
+                <div><p class="rb-workspace-kicker">Customer dashboard</p><h1>Food discovery</h1></div>
+            </div>
+            <div class="rb-workspace-topbar__actions">
+                <a class="rb-workspace-search" href="{% url 'food:discover' %}"><span>⌕</span> Search food, restaurant or category</a>
+                <a class="rb-workspace-icon-link" href="{% url 'notifications:index' %}" aria-label="Notifications">♧{% if unread_notification_count %}<b>{{ unread_notification_count }}</b>{% endif %}</a>
+                <span class="rb-workspace-avatar">{{ user.name|first|upper }}</span>
+            </div>
+        </header>
+
+        <div class="rb-workspace-layout">
+            <div class="rb-workspace-content">
+                <div class="rb-page-intro">
+                    <p class="rb-eyebrow">Good food is waiting</p>
+                    <h2>Find something worth <span>rescuing.</span></h2>
+                    <p>Browse fresh surplus meals from local restaurants and collect them before closing time.</p>
+                </div>
+                <div class="rb-category-pills" aria-label="Food categories">
+                    <a class="is-active" href="{% url 'food:discover' %}">All food</a>
+                    <a href="{% url 'food:discover' %}?category=RICE">Rice</a>
+                    <a href="{% url 'food:discover' %}?category=CHICKEN">Chicken</a>
+                    <a href="{% url 'food:discover' %}?category=FAST_FOOD">Fast food</a>
+                    <a href="{% url 'food:discover' %}?category=BAKERY">Bakery</a>
+                </div>
+                <section class="rb-workspace-panel">
+                    <div class="rb-panel-heading"><div><p class="rb-eyebrow">Fresh from local kitchens</p><h2>Featured food listings</h2></div><a href="{% url 'food:discover' %}">See all food <span>→</span></a></div>
+                    {% if active_listings %}
+                    <div class="rb-food-grid rb-food-grid--dashboard">
+                        {% for listing in active_listings %}{% include "includes/food_card.html" with listing=listing %}{% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="rb-empty-state"><span>🍛</span><h3>New Rescue Bites are coming soon.</h3><p>Check again near closing time for fresh discounted meals.</p><a href="{% url 'food:discover' %}">Browse the menu →</a></div>
+                    {% endif %}
+                </section>
+            </div>
+            {% include "includes/customer_rail.html" %}
+        </div>
+    </section>
+</div>
+{% endblock %}

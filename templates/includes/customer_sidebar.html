@@ -1,0 +1,22 @@
+<aside id="customer-sidebar" class="rb-workspace-sidebar rb-workspace-sidebar--customer">
+    <a class="rb-workspace-brand" href="{% url 'food:home' %}">
+        <span class="rb-workspace-brand__mark">RB</span>
+        <span>Rescue Bite</span>
+    </a>
+    <p class="rb-workspace-sidebar__label">Workspace</p>
+    <nav class="rb-workspace-sidebar__nav" aria-label="Customer dashboard navigation">
+        <a class="{% if request.resolver_match.url_name == 'customer_dashboard' %}is-active{% endif %}" href="{% url 'accounts:customer_dashboard' %}"><span>⌕</span> Discovery</a>
+        <a class="{% if request.resolver_match.url_name == 'discover' %}is-active{% endif %}" href="{% url 'food:discover' %}"><span>◌</span> Browse food</a>
+        <a class="{% if request.resolver_match.url_name == 'customer_list' or request.resolver_match.url_name == 'customer_reservations' %}is-active{% endif %}" href="{% url 'reservations:customer_list' %}"><span>▣</span> My reservations</a>
+        <a class="{% if request.resolver_match.namespace == 'notifications' %}is-active{% endif %}" href="{% url 'notifications:index' %}"><span>♧</span> Notifications{% if unread_notification_count %}<b>{{ unread_notification_count }}</b>{% endif %}</a>
+        <a class="{% if request.resolver_match.namespace == 'impact' %}is-active{% endif %}" href="{% url 'impact:dashboard' %}"><span>↗</span> Impact</a>
+        <a class="{% if request.resolver_match.namespace == 'accounts' and request.resolver_match.url_name == 'profile' %}is-active{% endif %}" href="{% url 'accounts:profile' %}"><span>◎</span> Profile</a>
+    </nav>
+    <div class="rb-workspace-sidebar__footer">
+        <div class="rb-workspace-user">
+            <span class="rb-workspace-user__avatar">{{ user.name|first|upper }}</span>
+            <span><strong>{{ user.name|default:user.email }}</strong><small>Customer account</small></span>
+        </div>
+        <form method="post" action="{% url 'accounts:logout' %}">{% csrf_token %}<button type="submit" class="rb-workspace-logout">Log out</button></form>
+    </div>
+</aside>

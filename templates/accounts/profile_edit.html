@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Profile settings | Rescue Bite{% endblock %}
+{% block body_class %}rb-workspace-page rb-customer-page{% endblock %}
+{% block content %}
+<div class="rb-workspace rb-customer-workspace">
+    {% include "includes/customer_sidebar.html" %}
+    <section class="rb-workspace-main">
+        <header class="rb-workspace-topbar">
+            <div class="rb-workspace-topbar__title"><button class="rb-workspace-menu-button" type="button" data-workspace-menu-button aria-controls="customer-sidebar" aria-expanded="false" aria-label="Open workspace menu">☰</button><div><p class="rb-workspace-kicker">Customer dashboard</p><h1>Profile settings</h1></div></div>
+            <div class="rb-workspace-topbar__actions"><a class="rb-workspace-search" href="{% url 'accounts:customer_dashboard' %}"><span>←</span> Back to discovery</a><span class="rb-workspace-avatar">{{ user.name|first|upper }}</span></div>
+        </header>
+        <div class="rb-workspace-layout">
+            <div class="rb-workspace-content">
+                <div class="rb-page-intro"><p class="rb-eyebrow">Your account</p><h2>Make your profile <span>feel like you.</span></h2><p>Keep your contact and pickup preferences ready for every rescued meal.</p></div>
+                <form method="post" enctype="multipart/form-data" class="rb-form-card rb-profile-form">
+                    {% csrf_token %}
+                    <div class="rb-form-card__heading"><div><p class="rb-eyebrow">Personal details</p><h3>Profile settings</h3></div><span class="rb-form-card__badge">Customer</span></div>
+                    <div class="rb-form-fields">{{ form.as_p }}</div>
+                    <div class="rb-form-actions"><a class="rb-button rb-button--outline-dark" href="{% url 'accounts:customer_dashboard' %}">Cancel</a><button class="rb-button rb-button--amber" type="submit">Save profile <span>→</span></button></div>
+                </form>
+            </div>
+            {% include "includes/customer_rail.html" %}
+        </div>
+    </section>
+</div>
+{% endblock %}

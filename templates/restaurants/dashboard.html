@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Restaurant dashboard | Rescue Bite{% endblock %}
+{% block body_class %}rb-workspace-page rb-restaurant-page{% endblock %}
+{% block content %}
+<div class="rb-workspace rb-restaurant-workspace">
+    {% include "includes/restaurant_sidebar.html" %}
+    <section class="rb-workspace-main">
+        <header class="rb-workspace-topbar">
+            <div class="rb-workspace-topbar__title">
+                <button class="rb-workspace-menu-button" type="button" data-workspace-menu-button aria-controls="restaurant-sidebar" aria-expanded="false" aria-label="Open workspace menu">☰</button>
+                <div><p class="rb-workspace-kicker">Restaurant dashboard</p><h1>Overview</h1></div>
+            </div>
+            <div class="rb-workspace-topbar__actions"><a class="rb-workspace-search" href="{% url 'restaurants:food_create' %}"><span>＋</span> Create a food listing</a><span class="rb-workspace-avatar">{{ user.name|first|upper }}</span></div>
+        </header>
+
+        <div class="rb-workspace-layout rb-restaurant-workspace-layout">
+            <div class="rb-workspace-content">
+                <div class="rb-page-intro rb-page-intro--row"><div><p class="rb-eyebrow">Good work, {{ user.name|default:"restaurant owner" }}</p><h2>{{ restaurant.name }} <span>is making a difference.</span></h2><p>Turn tonight's surplus into affordable meals and measurable community impact.</p></div><a class="rb-button rb-button--amber" href="{% url 'restaurants:food_create' %}">List surplus food <span>→</span></a></div>
+
+                <section class="rb-summary-metrics" aria-label="Restaurant metrics">
+                    <article class="rb-summary-metric rb-summary-metric--accent"><span>✦</span><p>Active listings</p><strong>{{ active_count }}</strong><small>Live right now</small></article>
+                    <article class="rb-summary-metric"><span>◌</span><p>Total listings</p><strong>{{ total_count }}</strong><small>Meals shared</small></article>
+                    <article class="rb-summary-metric"><span>✓</span><p>Reservations</p><strong>{{ reservation_count }}</strong><small>{{ meals_rescued }} meals collected</small></article>
+                </section>
+
+                <section class="rb-workspace-panel rb-quick-create-panel">
+                    <div class="rb-panel-heading"><div><p class="rb-eyebrow">Share tonight's surplus</p><h2>Listing creation</h2></div><a href="{% url 'restaurants:food_create' %}">Open full form <span>↗</span></a></div>
+                    <p class="rb-panel-copy">Create a clear, time-sensitive listing so customers know exactly what they can rescue.</p>
+                    <div class="rb-quick-create-grid"><span><b>01</b> Food image</span><span><b>02</b> Food name</span><span><b>03</b> Discount price</span><span><b>04</b> Inventory</span><span><b>05</b> Pickup deadline</span></div>
+                    <a class="rb-inline-cta" href="{% url 'restaurants:food_create' %}">Create a listing <span>→</span></a>
+                </section>
+
+                <section class="rb-workspace-panel">
+                    <div class="rb-panel-heading"><div><p class="rb-eyebrow">Your live stock</p><h2>Inventory management</h2></div><a href="{% url 'restaurants:food_create' %}">Add listing <span>＋</span></a></div>
+                    {% if listings %}
+                    <div class="rb-inventory-list">
+                        {% for listing in listings %}
+                        <article class="rb-inventory-item">
+                            {% if listing.display_image %}<img src="{{ listing.display_image }}" alt="{{ listing.name }}">{% else %}<span class="rb-inventory-item__placeholder">🍛</span>{% endif %}
+                            <div><strong>{{ listing.name }}</strong><small>{{ listing.get_category_display }} · RM {{ listing.discounted_price }} · {{ listing.quantity }} portions</small></div>
+                            <span class="rb-workspace-status rb-workspace-status--{{ listing.status|lower }}">{{ listing.get_status_display }}</span>
+                            <div class="rb-inventory-item__actions"><a href="{% url 'restaurants:food_edit' listing.pk %}">Edit</a><form method="post" action="{% url 'restaurants:food_delete' listing.pk %}">{% csrf_token %}<button type="submit">Delete</button></form></div>
+                        </article>
+                        {% endfor %}
+                    </div>
+                    {% else %}<div class="rb-empty-state"><span>🍛</span><h3>Your inventory is ready for its first Rescue Bite.</h3><p>Add your first surplus listing to reach nearby customers.</p><a href="{% url 'restaurants:food_create' %}">Create a listing →</a></div>{% endif %}
+                </section>
+            </div>
+
+            <aside class="rb-workspace-right-rail rb-restaurant-rail">
+                <section class="rb-rail-card rb-restaurant-profile-card">
+                    <div class="rb-restaurant-profile-card__image">{% if restaurant.display_image %}<img src="{{ restaurant.display_image }}" alt="{{ restaurant.name }}">{% else %}<span>⌂</span>{% endif %}</div>
+                    <div class="rb-restaurant-profile-card__copy"><p class="rb-eyebrow">Restaurant profile</p><h2>{{ restaurant.name }}</h2><p>{{ restaurant.location|default:restaurant.address|default:"Add your pickup location" }}</p><a href="{% url 'restaurants:profile' %}">Edit profile <span>↗</span></a></div>
+                </section>
+                <section class="rb-rail-card rb-reservation-summary"><div class="rb-rail-card__heading"><h2>Reservations</h2><a href="{% url 'restaurants:reservations' %}">Manage →</a></div><strong>{{ reservation_count }}</strong><p>customer reservations</p><div class="rb-mini-stat"><span>Collected meals</span><b>{{ meals_rescued }}</b></div><div class="rb-mini-stat"><span>Revenue recovered</span><b>RM {{ revenue_recovered }}</b></div></section>
+                <section class="rb-rail-card rb-rail-card--impact"><div class="rb-rail-card__heading"><h2>Restaurant impact</h2><span>↗</span></div><div class="rb-impact-ring rb-impact-ring--restaurant"><strong>{{ meals_rescued }}</strong><small>meals<br>rescued</small></div><p class="rb-impact-caption">Every collected order keeps edible food in the community.</p><a class="rb-rail-link" href="{% url 'impact:dashboard' %}">View impact tracker <span>→</span></a></section>
+            </aside>
+        </div>
+    </section>
+</div>
+{% endblock %}

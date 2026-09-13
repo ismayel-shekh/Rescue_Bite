@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard | Rescue Bite{% endblock %}
+{% block body_class %}rb-workspace-page rb-admin{% endblock %}
+{% block content %}
+<div class="rb-admin-layout">
+    <aside id="admin-sidebar" class="rb-admin-sidebar">
+        <a class="rb-admin-brand" href="{% url 'food:home' %}">
+            <span class="rb-admin-brand__mark">RB</span>
+            <span>Rescue Bite</span>
+        </a>
+        <p class="rb-admin-sidebar__label">Workspace</p>
+        <nav class="rb-admin-sidebar__nav" aria-label="Admin dashboard navigation">
+            <a class="is-active" href="{% url 'admin_dashboard:home' %}"><span>▦</span> Overview</a>
+            <a href="{% url 'food:discover' %}"><span>⌕</span> Browse food</a>
+            <a href="{% url 'impact:dashboard' %}"><span>↗</span> Impact tracker</a>
+            <a href="{% url 'admin:index' %}"><span>⚙</span> Django Admin</a>
+        </nav>
+        <div class="rb-admin-sidebar__footer">
+            <p>Signed in as</p>
+            <strong>{{ user.name|default:user.email }}</strong>
+            <a href="{% url 'food:home' %}">Back to website →</a>
+            <form method="post" action="{% url 'accounts:logout' %}">{% csrf_token %}<button type="submit" class="rb-admin-logout">Log out</button></form>
+        </div>
+    </aside>
+
+    <section class="rb-admin-main">
+        <header class="rb-admin-topbar">
+            <button class="rb-workspace-menu-button" type="button" data-workspace-menu-button aria-controls="admin-sidebar" aria-expanded="false" aria-label="Open admin menu">☰</button>
+            <div class="rb-admin-search"><span>⌕</span> Search platform</div>
+            <div class="rb-admin-topbar__actions"><a href="{% url 'food:discover' %}" aria-label="Browse food">◌</a><a href="{% url 'notifications:index' %}" aria-label="Notifications">♧</a><span class="rb-workspace-avatar">{{ user.name|first|upper }}</span></div>
+        </header>
+        <div class="rb-admin-heading">
+            <div>
+                <p class="rb-eyebrow">Platform overview</p>
+                <h1>Admin Dashboard</h1>
+                <p>Monitor the Rescue Bite community and the food being rescued today.</p>
+            </div>
+            <a class="rb-admin-heading__action" href="{% url 'admin:index' %}">Manage data <span>↗</span></a>
+        </div>
+
+        <section class="rb-admin-metrics" aria-label="Platform metrics">
+            <article class="rb-admin-metric rb-admin-metric--accent"><span class="rb-admin-metric__icon">♨</span><p>Total customers</p><strong>{{ metrics.customers }}</strong><small>People rescuing meals</small></article>
+            <article class="rb-admin-metric"><span class="rb-admin-metric__icon">⌂</span><p>Restaurants</p><strong>{{ metrics.restaurants }}</strong><small>{{ metrics.owners }} owner accounts</small></article>
+            <article class="rb-admin-metric"><span class="rb-admin-metric__icon">✦</span><p>Active listings</p><strong>{{ metrics.active_listings }}</strong><small>Available to reserve</small></article>
+            <article class="rb-admin-metric"><span class="rb-admin-metric__icon">✓</span><p>Collected meals</p><strong>{{ metrics.collected }}</strong><small>{{ metrics.reservations }} total reservations</small></article>
+        </section>
+
+        <section class="rb-admin-impact">
+            <div><p class="rb-eyebrow">Social impact</p><h2>Every bite counts.</h2><p>Collected meals stay in the community instead of becoming waste.</p></div>
+            <div class="rb-admin-impact__stats"><span><strong>{{ impact.meals_served }}</strong> meals served</span><span><strong>{{ impact.food_saved_kg }} kg</strong> food saved</span><span><strong>{{ impact.co2_avoided_kg }} kg</strong> estimated CO₂ avoided</span></div>
+        </section>
+
+        <div class="rb-admin-columns">
+            <section class="rb-admin-panel">
+                <div class="rb-admin-panel__heading"><div><p class="rb-eyebrow">Inventory</p><h2>Latest Rescue Bites</h2></div><a href="{% url 'food:discover' %}">View all →</a></div>
+                {% if recent_listings %}
+                    <div class="rb-admin-list">
+                        {% for listing in recent_listings %}
+                            <a class="rb-admin-list__item" href="{% url 'food:detail' listing.pk %}">
+                                {% if listing.display_image %}<img src="{{ listing.display_image }}" alt="{{ listing.name }}">{% else %}<span class="rb-admin-list__placeholder">🍛</span>{% endif %}
+                                <span><strong>{{ listing.name }}</strong><small>{{ listing.restaurant.name }} · {{ listing.quantity }} left</small></span>
+                                <b>RM {{ listing.discounted_price }}</b>
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% else %}<p class="rb-admin-empty">No active listings yet.</p>{% endif %}
+            </section>
+
+            <section class="rb-admin-panel">
+                <div class="rb-admin-panel__heading"><div><p class="rb-eyebrow">Activity</p><h2>Recent reservations</h2></div><a href="{% url 'admin:index' %}">Manage →</a></div>
+                {% if recent_reservations %}
+                    <div class="rb-admin-list rb-admin-list--reservations">
+                        {% for reservation in recent_reservations %}
+                            <div class="rb-admin-list__item"><span class="rb-admin-list__avatar">{{ reservation.customer.name|first|upper }}</span><span><strong>{{ reservation.customer.name }}</strong><small>{{ reservation.food_listing.name }} · {{ reservation.quantity }} meal{{ reservation.quantity|pluralize }}</small></span><b class="rb-status rb-status--{{ reservation.status|lower }}">{{ reservation.get_status_display }}</b></div>
+                        {% endfor %}
+                    </div>
+                {% else %}<p class="rb-admin-empty">No reservations yet.</p>{% endif %}
+            </section>
+        </div>
+    </section>
+</div>
+{% endblock %}

@@ -1,0 +1,9 @@
+<form method="get" class="rb-discovery-filters">
+    <label class="rb-discovery-search-field"><span>Search food</span><div><span class="rb-field-icon">⌕</span><input type="search" name="q" value="{{ filters.q|default:'' }}" placeholder="Food, restaurant or category"></div></label>
+    <label><span>Category</span><select name="category"><option value="">All categories</option>{% for value,label in categories %}<option value="{{ value }}" {% if filters.category == value %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></label>
+    <label><span>Sort by</span><select name="sort"><option value="newest" {% if filters.sort == 'newest' or not filters.sort %}selected{% endif %}>Newest</option><option value="highest_discount" {% if filters.sort == 'highest_discount' %}selected{% endif %}>Highest discount</option><option value="lowest_price" {% if filters.sort == 'lowest_price' %}selected{% endif %}>Lowest price</option><option value="ending_soon" {% if filters.sort == 'ending_soon' %}selected{% endif %}>Ending soon</option></select></label>
+    <label><span>Discount</span><select name="min_discount"><option value="">Any discount</option><option value="40" {% if filters.min_discount == '40' %}selected{% endif %}>40% or more</option><option value="50" {% if filters.min_discount == '50' %}selected{% endif %}>50% or more</option><option value="60" {% if filters.min_discount == '60' %}selected{% endif %}>60% off</option></select></label>
+    <label><span>Max price</span><input type="number" min="0" step="0.01" name="max_price" value="{{ filters.max_price|default:'' }}" placeholder="RM 10"></label>
+    <label><span>Location</span><input type="text" name="location" value="{{ filters.location|default:'' }}" placeholder="AIU Campus"></label>
+    <button class="rb-button rb-button--amber" type="submit">Search <span>→</span></button>
+</form>

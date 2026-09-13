@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Restaurant reservations | Rescue Bite{% endblock %}
+{% block body_class %}rb-workspace-page rb-restaurant-page{% endblock %}
+{% block content %}
+<div class="rb-workspace rb-restaurant-workspace">
+    {% include "includes/restaurant_sidebar.html" %}
+    <section class="rb-workspace-main">
+        <header class="rb-workspace-topbar"><div class="rb-workspace-topbar__title"><button class="rb-workspace-menu-button" type="button" data-workspace-menu-button aria-controls="restaurant-sidebar" aria-expanded="false" aria-label="Open workspace menu">☰</button><div><p class="rb-workspace-kicker">Restaurant dashboard</p><h1>Reservation management</h1></div></div><div class="rb-workspace-topbar__actions"><a class="rb-workspace-search" href="{% url 'restaurants:dashboard' %}"><span>←</span> Back to overview</a><span class="rb-workspace-avatar">{{ user.name|first|upper }}</span></div></header>
+        <div class="rb-workspace-layout">
+            <div class="rb-workspace-content">
+                <div class="rb-page-intro"><p class="rb-eyebrow">{{ restaurant.name }}</p><h2>Confirm every <span>rescued meal.</span></h2><p>Prepare upcoming collections and mark orders complete when customers arrive.</p></div>
+                <section class="rb-workspace-panel"><div class="rb-panel-heading"><div><p class="rb-eyebrow">Customer activity</p><h2>Reservations</h2></div><a href="{% url 'restaurants:food_create' %}">List more food <span>＋</span></a></div><div class="rb-reservation-management-list">{% for reservation in reservations %}<article class="rb-management-row"><div class="rb-management-row__avatar">{{ reservation.customer.name|first|upper }}</div><div class="rb-management-row__body"><p>{{ reservation.reservation_code }}</p><h3>{{ reservation.food_listing.name }}</h3><small>{{ reservation.customer.name }} · {{ reservation.quantity }} portion(s) · RM {{ reservation.total_price }}</small></div><span class="rb-workspace-status rb-workspace-status--{{ reservation.status|lower }}">{{ reservation.get_status_display }}</span>{% if reservation.status == 'RESERVED' %}<form method="post" action="{% url 'reservations:collect' reservation.pk %}">{% csrf_token %}<button class="rb-inline-cta" type="submit">Mark collected <span>✓</span></button></form>{% endif %}</article>{% empty %}<div class="rb-empty-state"><span>▣</span><h3>No reservations yet.</h3><p>Reservations will appear when customers rescue your surplus food.</p><a href="{% url 'restaurants:food_create' %}">Create a listing →</a></div>{% endfor %}</div></section>
+            </div>
+            <aside class="rb-workspace-right-rail rb-restaurant-rail"><section class="rb-rail-card"><div class="rb-rail-card__heading"><h2>Collection guide</h2><span>01</span></div><div class="rb-guide-step"><b>01</b><span><strong>Prepare the order</strong><small>Keep rescued food ready before the pickup window.</small></span></div><div class="rb-guide-step"><b>02</b><span><strong>Check the code</strong><small>Match the customer's reservation code at collection.</small></span></div><div class="rb-guide-step"><b>03</b><span><strong>Mark collected</strong><small>Update the reservation to keep impact data accurate.</small></span></div></section><section class="rb-rail-card rb-rail-card--impact"><div class="rb-rail-card__heading"><h2>Restaurant impact</h2><span>↗</span></div><p class="rb-impact-caption">Collected meals stay affordable and visible in your impact tracker.</p><a class="rb-rail-link" href="{% url 'impact:dashboard' %}">View impact tracker <span>→</span></a></section></aside>
+        </div>
+    </section>
+</div>
+{% endblock %}

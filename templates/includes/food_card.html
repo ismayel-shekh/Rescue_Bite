@@ -1,0 +1,14 @@
+<article class="rb-food-card">
+    <a class="rb-food-card__media" href="{% url 'food:detail' listing.pk %}">
+        {% if listing.display_image %}<img src="{{ listing.display_image }}" alt="{{ listing.name }} from {{ listing.restaurant.name }}" loading="lazy">{% else %}<span class="rb-food-card__placeholder" aria-label="Food image placeholder">🍛</span>{% endif %}
+        <span class="rb-food-card__discount">{{ listing.discount_percentage }}% off</span>
+        {% if listing.is_low_stock %}<span class="rb-food-card__stock">Only {{ listing.quantity }} left</span>{% endif %}
+    </a>
+    <div class="rb-food-card__body">
+        <div class="rb-food-card__title"><div><p>{{ listing.restaurant.name }}</p><h3>{{ listing.name }}</h3></div><span class="rb-food-card__category">{{ listing.get_category_display }}</span></div>
+        <p class="rb-food-card__location">⌖ {{ listing.pickup_location|default:listing.restaurant.location|default:listing.restaurant.address }}</p>
+        <div class="rb-food-card__price"><div><span>RM {{ listing.original_price }}</span><strong>RM {{ listing.discounted_price }}</strong></div><small>{{ listing.quantity }} left</small></div>
+        <p class="rb-food-card__pickup">Pickup {{ listing.pickup_start|time:"g:i A" }}–{{ listing.pickup_end|time:"g:i A" }}</p>
+        <a class="rb-food-card__action" href="{% url 'food:detail' listing.pk %}">Reserve now <span>→</span></a>
+    </div>
+</article>

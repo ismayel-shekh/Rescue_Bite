@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Reserve {{ listing.name }} | Rescue Bite{% endblock %}
+{% block content %}
+<section class="mx-auto max-w-2xl px-4 py-12 sm:px-6">
+    <div class="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+        <p class="text-sm font-semibold text-emerald-700">{{ listing.restaurant.name }}</p>
+        <h1 class="mt-2 text-3xl font-bold text-slate-950">Reserve {{ listing.name }}</h1>
+        <div class="mt-5 rounded-2xl bg-slate-50 p-4 text-sm text-slate-700"><div class="flex justify-between"><span>Price per portion</span><strong>RM {{ listing.discounted_price }}</strong></div><div class="mt-2 flex justify-between"><span>Available</span><strong>{{ listing.quantity }} portion(s)</strong></div><div class="mt-2 flex justify-between"><span>Pickup</span><strong>{{ listing.pickup_start|time:"g:i A" }}–{{ listing.pickup_end|time:"g:i A" }}</strong></div></div>
+        <form method="post" class="mt-8 space-y-5">{% csrf_token %}{% if form.non_field_errors %}<div class="rounded-xl bg-red-50 p-3 text-sm text-red-700">{{ form.non_field_errors }}</div>{% endif %}{{ form.as_p }}<p class="text-sm text-slate-500">Payment: Pay at Collection</p><button class="w-full rounded-xl bg-emerald-600 px-4 py-3 font-semibold text-white hover:bg-emerald-700" type="submit">Confirm reservation</button></form>
+    </div>
+</section>
+{% endblock %}

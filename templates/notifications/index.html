@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Notifications | Rescue Bite{% endblock %}
+{% block body_class %}rb-workspace-page rb-customer-page{% endblock %}
+{% block content %}
+<div class="rb-workspace rb-customer-workspace">
+    {% include "includes/customer_sidebar.html" %}
+    <section class="rb-workspace-main">
+        <header class="rb-workspace-topbar"><div class="rb-workspace-topbar__title"><button class="rb-workspace-menu-button" type="button" data-workspace-menu-button aria-controls="customer-sidebar" aria-expanded="false" aria-label="Open workspace menu">☰</button><div><p class="rb-workspace-kicker">Customer dashboard</p><h1>Notifications</h1></div></div><div class="rb-workspace-topbar__actions"><a class="rb-workspace-search" href="{% url 'food:discover' %}"><span>⌕</span> Search food</a><span class="rb-workspace-avatar">{{ user.name|first|upper }}</span></div></header>
+        <div class="rb-workspace-layout">
+            <div class="rb-workspace-content">
+                <div class="rb-page-intro"><p class="rb-eyebrow">Stay updated</p><h2>Everything important, <span>right here.</span></h2><p>Get updates about new food, reservations, and pickup deadlines.</p></div>
+                <section class="rb-workspace-panel"><div class="rb-panel-heading"><div><p class="rb-eyebrow">Your activity</p><h2>Notifications</h2></div><span class="rb-panel-note">{{ unread_notification_count }} unread</span></div><div class="rb-notifications-page-list">{% for notification in notifications %}<article class="rb-full-notification{% if not notification.is_read %} is-unread{% endif %}"><span class="rb-notification-item__icon">{% if notification.notification_type == 'RESERVATION' %}✓{% elif notification.notification_type == 'ENDING_SOON' %}!{% else %}✦{% endif %}</span><div><h3>{{ notification.title }}</h3><p>{{ notification.message }}</p><small>{{ notification.created_at|date:"M j, Y g:i A" }}</small></div>{% if not notification.is_read %}<form method="post" action="{% url 'notifications:mark_read' notification.pk %}">{% csrf_token %}<button type="submit">Mark read</button></form>{% endif %}</article>{% empty %}<div class="rb-empty-state"><span>✓</span><h3>You're all caught up.</h3><p>New reservation and food updates will appear here.</p></div>{% endfor %}</div></section>
+            </div>
+            {% include "includes/customer_rail.html" %}
+        </div>
+    </section>
+</div>
+{% endblock %}

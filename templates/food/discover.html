@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Discover food | Rescue Bite{% endblock %}
+{% block body_class %}{% if user.is_authenticated and user.role == 'CUSTOMER' %}rb-workspace-page rb-customer-page{% else %}rb-public-discover-page{% endif %}{% endblock %}
+{% block content %}
+{% if user.is_authenticated and user.role == 'CUSTOMER' %}
+<div class="rb-workspace rb-customer-workspace">
+    {% include "includes/customer_sidebar.html" %}
+    <section class="rb-workspace-main">
+        <header class="rb-workspace-topbar">
+            <div class="rb-workspace-topbar__title">
+                <button class="rb-workspace-menu-button" type="button" data-workspace-menu-button aria-controls="customer-sidebar" aria-expanded="false" aria-label="Open workspace menu">☰</button>
+                <div><p class="rb-workspace-kicker">Customer dashboard</p><h1>Food discovery</h1></div>
+            </div>
+            <div class="rb-workspace-topbar__actions"><a class="rb-workspace-icon-link" href="{% url 'notifications:index' %}" aria-label="Notifications">♧{% if unread_notification_count %}<b>{{ unread_notification_count }}</b>{% endif %}</a><span class="rb-workspace-avatar">{{ user.name|first|upper }}</span></div>
+        </header>
+        <div class="rb-workspace-layout">
+            <div class="rb-workspace-content">
+                <div class="rb-page-intro"><p class="rb-eyebrow">Affordable meals near you</p><h2>Browse what is worth <span>rescuing.</span></h2><p>Find trusted food from local restaurants before the pickup window closes.</p></div>
+                {% include "includes/discover_filters.html" %}
+                <section class="rb-workspace-panel rb-listings-panel">
+                    <div class="rb-panel-heading"><div><p class="rb-eyebrow">Live inventory</p><h2>{{ listings|length }} Rescue Bites available</h2></div><span class="rb-panel-note">Updated near closing time</span></div>
+                    {% if listings %}<div class="rb-food-grid">{% for listing in listings %}{% include "includes/food_card.html" with listing=listing %}{% endfor %}</div>{% else %}<div class="rb-empty-state"><span>⌕</span><h3>No Rescue Bites match your search.</h3><p>Try a different filter or check again near closing time.</p></div>{% endif %}
+                </section>
+            </div>
+            {% include "includes/customer_rail.html" %}
+        </div>
+    </section>
+</div>
+{% else %}
+<section class="rb-public-discover rb-shell">
+    <div class="rb-page-intro"><p class="rb-eyebrow">Affordable meals near you</p><h1>Food discovery</h1><p>Rescue good food before it becomes waste.</p></div>
+    {% include "includes/discover_filters.html" %}
+    {% if listings %}<div class="rb-food-grid rb-public-food-grid">{% for listing in listings %}{% include "includes/food_card.html" with listing=listing %}{% endfor %}</div>{% else %}<div class="rb-empty-state"><span>⌕</span><h2>No Rescue Bites match your search.</h2><p>Try a different filter or check again near closing time.</p></div>{% endif %}
+</section>
+{% endif %}
+{% endblock %}

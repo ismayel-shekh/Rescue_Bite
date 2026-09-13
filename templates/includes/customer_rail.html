@@ -1,0 +1,21 @@
+<aside class="rb-workspace-right-rail">
+    <section class="rb-rail-card">
+        <div class="rb-rail-card__heading"><h2>Notifications</h2><a href="{% url 'notifications:index' %}">{% if unread_notification_count %}{{ unread_notification_count }} new{% else %}View all{% endif %}</a></div>
+        <div class="rb-notification-list">
+            {% for notification in recent_notifications|slice:":3" %}
+            <a class="rb-notification-item{% if not notification.is_read %} is-unread{% endif %}" href="{% url 'notifications:index' %}">
+                <span class="rb-notification-item__icon">{% if notification.notification_type == 'RESERVATION' %}✓{% elif notification.notification_type == 'ENDING_SOON' %}!{% else %}✦{% endif %}</span>
+                <span><strong>{{ notification.title }}</strong><small>{{ notification.message|truncatechars:52 }}</small></span>
+            </a>
+            {% empty %}
+            <p class="rb-rail-empty">You're all caught up. New food and reservation updates will appear here.</p>
+            {% endfor %}
+        </div>
+    </section>
+    <section class="rb-rail-card rb-rail-card--impact">
+        <div class="rb-rail-card__heading"><h2>Personalized impact</h2><span>↗</span></div>
+        <div class="rb-impact-ring"><strong>{{ impact.meals_served|default:0 }}</strong><small>meals<br>rescued</small></div>
+        <div class="rb-rail-stat-row"><span><strong>{{ impact.food_saved_kg|default:0 }} kg</strong><small>food saved</small></span><span><strong>RM {{ impact.customer_savings|default:0 }}</strong><small>money saved</small></span></div>
+        <a class="rb-rail-link" href="{% url 'impact:dashboard' %}">Track my impact <span>→</span></a>
+    </section>
+</aside>

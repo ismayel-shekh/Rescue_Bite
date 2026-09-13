@@ -1,0 +1,21 @@
+<aside id="restaurant-sidebar" class="rb-workspace-sidebar rb-workspace-sidebar--restaurant">
+    <a class="rb-workspace-brand" href="{% url 'food:home' %}">
+        <span class="rb-workspace-brand__mark">RB</span>
+        <span>Rescue Bite</span>
+    </a>
+    <p class="rb-workspace-sidebar__label">Restaurant workspace</p>
+    <nav class="rb-workspace-sidebar__nav" aria-label="Restaurant dashboard navigation">
+        <a class="{% if request.resolver_match.url_name == 'dashboard' and request.resolver_match.namespace == 'restaurants' %}is-active{% endif %}" href="{% url 'restaurants:dashboard' %}"><span>▦</span> Overview</a>
+        <a class="{% if request.resolver_match.url_name == 'food_create' or request.resolver_match.url_name == 'food_edit' %}is-active{% endif %}" href="{% url 'restaurants:food_create' %}"><span>✦</span> Listing creation</a>
+        <a class="{% if request.resolver_match.url_name == 'reservations' %}is-active{% endif %}" href="{% url 'restaurants:reservations' %}"><span>▣</span> Reservations</a>
+        <a class="{% if request.resolver_match.url_name == 'profile' and request.resolver_match.namespace == 'restaurants' %}is-active{% endif %}" href="{% url 'restaurants:profile' %}"><span>◎</span> Restaurant profile</a>
+        <a href="{% url 'impact:dashboard' %}"><span>↗</span> Restaurant impact</a>
+    </nav>
+    <div class="rb-workspace-sidebar__footer">
+        <div class="rb-workspace-user">
+            <span class="rb-workspace-user__avatar">{{ user.name|first|upper }}</span>
+            <span><strong>{{ restaurant.name }}</strong><small>Restaurant owner</small></span>
+        </div>
+        <form method="post" action="{% url 'accounts:logout' %}">{% csrf_token %}<button type="submit" class="rb-workspace-logout">Log out</button></form>
+    </div>
+</aside>
